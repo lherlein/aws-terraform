@@ -58,7 +58,7 @@ resource "aws_security_group" "sg" {
 
 resource "aws_key_pair" "testkey1" {
   key_name   = "testkey1"
-  public_key = file("$HOME/.ssh/id_rsa.pub")
+  public_key = file(var.publickey)
 }
 
 resource "aws_instance" "instance" {
