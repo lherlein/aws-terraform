@@ -1,5 +1,4 @@
 provider "aws" {
-  shared_credentials_file = "/home/luca/.aws/credentials"
   profile = "default"
   region  = "us-west-2"
 }
@@ -21,7 +20,7 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_ebs_snapshot" "example_snapshot" {
-  volume_id = "${aws_ebs_volume.example.id}"
+  volume_id = "aws_ebs_volume.example.id"
 
   tags = {
     Name = "HelloWorld_snap"
@@ -59,14 +58,14 @@ resource "aws_security_group" "sg" {
 
 resource "aws_key_pair" "testkey1" {
   key_name   = "testkey1"
-  public_key = file("/home/luca/.ssh/id_rsa.pub")
+  public_key = file("$HOME/.ssh/id_rsa.pub")
 }
 
 resource "aws_instance" "instance" {
-  ami           = data.aws_ami.ubuntu.id
+  ami             = data.aws_ami.ubuntu.id
   security_groups = [aws_security_group.sg.name]
-  instance_type = "t2.micro"
-  key_name      = "testkey1"
+  instance_type   = "t2.micro"
+  key_name        = "testkey1"
 }
 
 output "ip_address" {
