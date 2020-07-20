@@ -1,7 +1,8 @@
 *~
 *.pem
 *.pub
-terraform.tfstate
+*terraform.tfstate
 *.tfstate
 *.tfstate.*
 var.tf
+*#
