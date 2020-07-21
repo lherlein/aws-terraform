@@ -19,23 +19,6 @@ data "aws_ami" "ubuntu" {
 
 }
 
-resource "aws_ebs_snapshot" "example_snapshot" {
-  volume_id = "aws_ebs_volume.example.id"
-
-  tags = {
-    Name = "HelloWorld_snap"
-  }
-}
-
-resource "aws_ebs_volume" "example" {
-  availability_zone = "us-west-2a"
-  size              = 40
-
-  tags = {
-    Name = "HelloWorld"
-  }
-}
-
 resource "aws_security_group" "sg" {
   name = "ssh-allow"
   ingress {
@@ -61,13 +44,40 @@ resource "aws_key_pair" "testkey1" {
   public_key = file(var.publickey)
 }
 
-resource "aws_instance" "instance" {
+resource "aws_instance" "ubuntu" {
   ami             = data.aws_ami.ubuntu.id
   security_groups = [aws_security_group.sg.name]
   instance_type   = "t2.micro"
   key_name        = "testkey1"
+
 }
 
-output "ip_address" {
-  value = aws_instance.instance.public_ip
+resource "aws_ebs_volume" "vol-data" {
+  availability_zone = "us-west-2a"
+  size              = 1
+
+  tags = {
+    Name = "data-volume"
+  }
 }
+
+resource "aws_volume_attachment" "ubuntu-vol" {
+  device_name = "/dev/sdh"
+  volume_id   = "aws_ebs_volume.vol-data.id"
+  instance_id = "aws_instance.ubuntu.id"
+
+}
+
+/*
+resource "aws_ebs_snapshot" "example_snapshot" {
+  volume_id = "aws_ebs_volume.vol-data.id"
+
+  tags = {
+    Name = "HelloWorld_snap"
+  }
+}
+*/
+output "ip_address" {
+  value = aws_instance.ubuntu.public_ip
+}
+
